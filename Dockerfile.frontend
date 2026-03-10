@@ -4,7 +4,7 @@ FROM python:3.12-slim
 # On se place dans un dossier /app
 WORKDIR /app
 
-# On copie la liste des courses
+# On copie le fichier requirements pour installer les libs
 COPY requirements.txt .
 
 # On installe les librairies

@@ -9,7 +9,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 from scipy.sparse import hstack
 
-# 🤫 Charge les variables d'environnement (pour le local et le cloud)
+# Charge les variables d'environnement (pour le local et le cloud)
 load_dotenv()
 
 # Téléchargement du dictionnaire VADER (silencieux)
@@ -33,9 +33,9 @@ def get_api_key(api_key_header: str = Security(api_key_header)):
         return api_key_header
     raise HTTPException(status_code=403, detail="Accès refusé. Clé API invalide.")
 
-# 🧠 2. Chargement du TF-IDF et du Modèle
+# 2. Chargement du TF-IDF et du Modèle
 try:
-    chargement = joblib.load("model_robust.pkl")
+    chargement = joblib.load("../models/model_robust.pkl")
     if isinstance(chargement, dict):
         tfidf = chargement.get("tfidf")
         model = chargement.get("model")
@@ -61,14 +61,14 @@ def predict_sentiment(review: Review, api_key: str = Depends(get_api_key)):
     if model is None or tfidf is None:
         raise HTTPException(status_code=500, detail="Le modèle ou le TF-IDF n'est pas chargé.")
     
-    # ÉTAPE A : TF-IDF (On récupère les 500 colonnes)
+    # ÉTAPE A : TF-IDF (On récupère les 5000 colonnes)
     texte_vectorise = tfidf.transform([review.text])
     
-    # ÉTAPE B : VADER (On calcule la 501ème colonne)
+    # ÉTAPE B : VADER (On calcule la 5001ème colonne)
     vader_score = sia.polarity_scores(review.text)['compound']
     vader_feature = np.array([[vader_score]])
     
-    # ÉTAPE C : On colle les deux ensemble (500 + 1 = 501 colonnes)
+    # ÉTAPE C : On colle les deux ensemble (5000 + 1 = 5001 colonnes)
     features_finales = hstack([texte_vectorise, vader_feature])
     
     # ÉTAPE D : On fait la prédiction avec le Modèle
