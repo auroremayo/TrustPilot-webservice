@@ -22,19 +22,12 @@ def stop_words_filtering(mots) :
         raise
 
 
-def tokenize_text(X_train_path, X_test_path):
+def tokenize_text(text):
     try:
-        X_train = pd.read_pickle(X_train_path)
-        X_test = pd.read_pickle(X_test_path)
-
         nltk.download('punkt_tab')
-        X_train['text_tokenized'] = X_train['text'].apply(lambda x: word_tokenize(x, language='english'))
-        X_test['text_tokenized'] = X_test['text'].apply(lambda x: word_tokenize(x, language='english'))
-
-        X_train['text_tokenized'] = X_train['text_tokenized'].apply(stop_words_filtering)
-        X_test['text_tokenized'] = X_test['text_tokenized'].apply(stop_words_filtering)
-        return X_train, X_test
-    
+        tokens = word_tokenize(text, language='english')
+        tokens = stop_words_filtering(tokens)
+        return tokens
     except Exception as e:
         logger.error(e)
         raise
@@ -42,10 +35,11 @@ def tokenize_text(X_train_path, X_test_path):
 
 def lemmatisation(mots) :
     try:
+        tokens = tokenize_text(mots)
         nltk.download('wordnet')
         wordnet_lemmatizer = WordNetLemmatizer()
         sortie = []
-        for string in mots :
+        for string in tokens :
             radical = wordnet_lemmatizer.lemmatize(string)
             if (radical not in sortie) : sortie.append(radical)
         return sortie
@@ -63,8 +57,8 @@ if __name__ == '__main__':
 
         X_train_path = "data/processed_data/X_train.pickle"
         X_test_path = "data/processed_data/X_test.pickle"
-        X_train, X_test = tokenize_text(X_train_path, X_test_path)
-        
+        X_train = pd.read_pickle(X_train_path)
+        X_test = pd.read_pickle(X_test_path)
         logger.info('lemmatizing data set')
         X_train['lemmes'] = X_train['text_tokenized'].apply(lemmatisation)
         X_test['lemmes'] = X_test['text_tokenized'].apply(lemmatisation)
