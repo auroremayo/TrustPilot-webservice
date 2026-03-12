@@ -61,8 +61,8 @@ if __name__ == '__main__':
         logger = logging.getLogger(__name__)
         logger.info('cleaning data set')
 
-        X_train_path = "X_train.csv"
-        X_test_path = "X_test.csv"
+        X_train_path = "data/processed_data/X_train.pickle"
+        X_test_path = "data/processed_data/X_test.pickle"
         X_train, X_test = tokenize_text(X_train_path, X_test_path)
         
         logger.info('lemmatizing data set')
@@ -76,8 +76,8 @@ if __name__ == '__main__':
             X_test.loc[i, 'lemmes'] = ' '.join(X_test.loc[i, 'lemmes'])
 
         logger.info('saving lemmatized data set')
-        X_train.to_pickle("X_train.pickle")
-        X_test.to_pickle("X_test.pickle")
+        X_train.to_pickle("data/processed_data/X_train_lemmas.pickle")
+        X_test.to_pickle("data/processed_data/X_test_lemmas.pickle")
 
     except Exception as e:
         logger.error(e)

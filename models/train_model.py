@@ -50,24 +50,26 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         logger = logging.getLogger(__name__)
         
-        X_train_tfidf = pd.read_pickle("../processed_data/X_train_tfidf.pickle")
-        X_test_tfidf = pd.read_pickle("../processed_data/X_test_tfidf.pickle")
-        y_train = pd.read_pickle("../processed_data/y_train.pickle")
-        y_test = pd.read_pickle("../processed_data/y_test.pickle")
-        tfidf = joblib.load("../processed_data/tfidf_vectorizer.pkl")
-        X_test = pd.read_pickle("../processed_data/X_test.pickle")
+        # X_train_tfidf = pd.read_pickle("../processed_data/X_train_tfidf.pickle")
+        # X_test_tfidf = pd.read_pickle("../processed_data/X_test_tfidf.pickle")
+        X_train_tfidf = np.load("data/processed_data/X_train_tfidf.npy")
+        X_test_tfidf = np.load("data/processed_data/X_test_tfidf.npy")
+        y_train = pd.read_csv("data/processed_data/y_train.csv", sep=',')
+        y_test = pd.read_csv("data/processed_data/y_test.csv", sep=',')
+        tfidf = joblib.load("models/tfidf_vectorizer_sample.pickle")
+        X_test = pd.read_pickle("data/processed_data/X_test.pickle")
         
         logger.info("Training LightGBM model")
-        model = train_model(lgb.LGBMClassifier(**params), X_train_tfidf, y_train, X_test_tfidf, y_test)
+        model = train_model(lgb.LGBMClassifier(**params), X_train_tfidf, y_train['score'], X_test_tfidf, y_test['score'])
 
         logger.info("Saving model")
-        joblib.dump(model, 'trustpilot_lgbm_model.pkl') 
+        joblib.dump(model, 'models/trustpilot_lgbm_model_sample.pkl') 
         
         logger.info("Calculating feature importance")
         importances = calculate_feature_importance(model, tfidf)
 
         logger.info("Saving feature importance in metrics/feature_importance.csv")
-        importances.to_csv("../metrics/feature_importance.csv", index=False)
+        importances.to_csv("metrics/feature_importance.csv", index=False)
         
     except Exception as e:
         logger.error(e)

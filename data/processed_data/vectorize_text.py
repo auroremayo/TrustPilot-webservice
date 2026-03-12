@@ -40,8 +40,8 @@ if __name__ == '__main__':
         logger = logging.getLogger(__name__)
         logger.info('vectorizing text')
 
-        X_train = pd.read_pickle("X_train.pickle")
-        X_test = pd.read_pickle("X_test.pickle")
+        X_train = pd.read_pickle("data/processed_data/X_train_lemmas.pickle")
+        X_test = pd.read_pickle("data/processed_data/X_test_lemmas.pickle")
         X_train_tfidf, X_test_tfidf, tfidf = vectorize(X_train, X_test)
         
         # logger.info('calculating VADER score')
@@ -55,9 +55,12 @@ if __name__ == '__main__':
         # X_test_final = np.hstack((X_test_tfidf_array, X_test_vader))
 
         logger.info('saving vectorized data set')
-        X_train_tfidf.to_pickle("X_train_tfidf.pickle")
-        X_test_tfidf.to_pickle("X_test_tfidf.pickle")
-        joblib.dump(tfidf, "tfidf_vectorizer.pkl")
+        np.save("data/processed_data/X_train_tfidf.npy", X_train_tfidf.toarray())
+        np.save("data/processed_data/X_test_tfidf.npy", X_test_tfidf.toarray())
+        # X_train_tfidf.to_pickle("data/processed_data/X_train_tfidf.pickle")
+        # X_test_tfidf.to_pickle("data/processed_data/X_test_tfidf.pickle")
+        logger.info('saving TF-IDF vectorizer')
+        joblib.dump(tfidf, "models/tfidf_vectorizer_sample.pickle")
 
 
     except Exception as e:

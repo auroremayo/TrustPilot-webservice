@@ -3,29 +3,7 @@ import os
 import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
-
-
-def import_raw_data(files_path, raw_data_relative_path 
-                    ):
-    '''import filenames from files_path in raw_data_relative_path'''
-    if check_existing_folder(raw_data_relative_path):
-        os.makedirs(raw_data_relative_path)
-    # download all the files
-    for filename in filenames :
-        input_file = os.path.join(files_path, filename)
-        output_file = os.path.join(raw_data_relative_path, filename)
-        if check_existing_file(output_file):
-            object_url = input_file
-            print(f'downloading {input_file} as {os.path.basename(output_file)}')
-            response = requests.get(object_url)
-            if response.status_code == 200:
-                # Process the response content as needed
-                content = response.text
-                text_file = open(output_file, "wb")
-                text_file.write(content.encode('utf-8'))
-                text_file.close()
-            else:
-                print(f'Error accessing the object {input_file}:', response.status_code)
+import numpy as np
 
 
 # Regrouper les notes
@@ -60,21 +38,24 @@ def equilibrer_par_index(x_df, y_series_grouped):
 
 
                 
-def main(files_path="./",
-        raw_data_relative_path="./", 
-        filenames = ["df_merged_clean.csv"]        
-        ):
+def main():
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     logger = logging.getLogger(__name__)
-
-
-    import_raw_data(files_path, raw_data_relative_path, filenames)
-
-    logger = logging.getLogger(__name__)
+    
     logger.info('making raw data set')
-    df = pd.read_csv("df_merged_clean.csv", sep=",")
-    df = df.head(1000)  # Example: keep only the first 1000 rows
+    df = pd.read_csv("data/raw_data/df_merged_clean.csv", sep=",")
+    #df = df.head(1000)  # Example: keep only the first 1000 rows
+    n_classes = df['overall'].nunique()
+    n_par_classe = 1000 // n_classes
+
+    sample = (
+        df.groupby('overall', group_keys=False)
+        .apply(lambda x: x.sample(n=n_par_classe, random_state=42), include_groups=42)
+    )
+
+    df = sample.reset_index(drop=True)
+
     df = df.dropna(subset=['summary', 'reviewText', 'overall'])
     df = df.rename(columns={'overall': 'score'})
     df['score'] = df['score'].astype(int)
@@ -94,11 +75,11 @@ def main(files_path="./",
     y_train_bal = y_train_bal - 1
     y_test_bal = y_test_bal - 1
 
-    logger.info("Train équilibré :", y_train_bal.value_counts())
-    logger.info("Test équilibré :", y_test_bal.value_counts())
+    print("Train équilibré :", y_train_bal.value_counts())
+    print("Test équilibré :", y_test_bal.value_counts())
 
     for file, filename in zip([x_train_bal, x_test_bal, y_train_bal, y_test_bal], ['X_train', 'X_test', 'y_train', 'y_test']):
-        output_filepath = os.path.join("../processed_data", f'{filename}.csv')
+        output_filepath = os.path.join("data/processed_data", f'{filename}.csv')
         file.to_csv(output_filepath, index=False)
 
 
