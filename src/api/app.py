@@ -195,3 +195,9 @@ def train_model():
         logger.error(f"Erreur lors de l'entraînement : {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de l'entraînement du modèle.")
 
+
+@app.post("/collect_data")
+def collect_data():
+    # Cette route pourrait être utilisée pour collecter de nouvelles données d'avis clients
+    # et les stocker dans une base de données ou un fichier pour un futur entraînement.
+    return {"message": "Route de collecte de données - à implémenter selon les besoins."}
