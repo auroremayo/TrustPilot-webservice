@@ -1,0 +1,28 @@
+{
+    "lakdar": {
+        "password": "$2b$12$.vCKGhnem.d/IaIrkVMHteQJzJLiECEZCukySBkIxLZiDxAoJtwzm",
+        "role": "admin",
+        "api_key": "da21ef6d0abb6e0fad7d109efaf34b2cc140f808931d7c11ba711ea300071fc7",
+        "token_expires_at": "2026-04-13"
+    },
+    "l": {
+        "password": "acac86c0e609ca906f632b0e2dacccb2b77d22b0621f20ebece1a4835b93f6f0",
+        "role": "user",
+        "api_key": "bcc68408e99c3ffcd2b6594818d202f315ada7c7015979a958f0c650c9b8d1b3",
+        "daily_count": 5,
+        "last_request_date": "2026-03-13"
+    },
+    "aurore": {
+        "password": "110cc34a7c1b3a50e6a9a3f2afb2aa330071e9a5f78543d0221c07eaca2e597c",
+        "role": "admin",
+        "api_key": "1ee88e43dc20adb267d43737e0a425c457a7b74880719907b37d8db628d91449"
+    },
+    "lololo": {
+        "password": "$2b$12$zE6hgeNkbmNb4JhEDsXBxeOa5ZrK4Ai72PDsATwrvXQ5BWNQoFv/W",
+        "role": "user",
+        "api_key": "6c4d81e5509edb21397cf15005815ddadc18e7913fb11f999d291d127cc5c818",
+        "token_expires_at": "2026-04-13",
+        "daily_count": 2,
+        "last_request_date": "2026-03-14"
+    }
+}
